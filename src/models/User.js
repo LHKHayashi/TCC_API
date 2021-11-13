@@ -17,11 +17,11 @@ const UserSchema = new mongoose.Schema({
     birthDate: {
         type: Date,
     },
-    gender: {
-        type: Number,
+    sex: {
+        type: String,
     },
     phone: {
-        type: Number,
+        type: String,
         required: true,
     },
     cep: {

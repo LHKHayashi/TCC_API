@@ -33,7 +33,7 @@ exports.signUp = async (req, res) => {
         password,
         name,
         birthDate,
-        gender,
+        sex,
         phone,
         number,
         complement,
@@ -54,7 +54,7 @@ exports.signUp = async (req, res) => {
             password: hash,
             name,
             birthDate,
-            gender,
+            sex,
             phone,
             number,
             complement,
@@ -93,3 +93,54 @@ function generateToken(params = {}) {
         expiresIn: 604800,
     });
 }
+
+exports.updateProfile = async (req, res) => {
+    const {
+        phone,
+        number,
+        complement,
+        street,
+        neighborhood,
+        cep,
+        city,
+        state,
+    } = req.body;
+    const { id } = req.params;
+
+    console.log('req.body', req.body);
+    console.log('id', id);
+
+    if (!ObjectId.isValid(id))
+        return res.status(400).send({
+            success: false,
+            message: 'Id do contato inválido',
+        });
+
+    const user = await User.findOne({ _id: ObjectId(id) });
+
+    if (!user)
+        return res
+            .status(404)
+            .send({ success: false, message: 'Usuário não encontrado!' });
+
+    const newProfile = await User.findOneAndUpdate(
+        { _id: id },
+        {
+            phone,
+            number,
+            complement,
+            street,
+            neighborhood,
+            cep,
+            city,
+            state,
+        },
+        { new: true }
+    );
+
+    return res.send({
+        success: true,
+        payload: newProfile,
+        message: 'Contato atualizado com sucesso!',
+    });
+};
